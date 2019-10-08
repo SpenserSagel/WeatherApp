@@ -4,12 +4,19 @@
       -write multiple fetch calls to different weather api
       -combine data into one set
       -display data onto page
+
+      --format other URLS
+      --find a 4th API
+      --get temps from other URLS
+      --combine temps
+      --display temps
+
 */
 accuWeatherKey= "?apikey=MAe2sJnI8J4aPC2lrdXJ0srAizjCp6jW";
-locationURL= "https://cors-anywhere.herokuapp.com/https://dataservice.accuweather.com/locations/v1/cities/";
-accuWeatherURL= "https://cors-anywhere.herokuapp.com/https://dataservice.accuweather.com/forecasts/v1/daily/5day/"
-//must set up proxy darkSkyURL= "https://api.darksky.net/forecast/3376c98c20aa4edf120a638b7c49a715/39.739,-104.985";
-openWeatherURL= "https://api.openweathermap.org/data/2.5/forecast?lat=39.739&lon=-104.985&appid=08d77f5d1b0e1290aa91c405aa22063e";
+locationURL= "https://dataservice.accuweather.com/locations/v1/cities/";
+accuWeatherURL= "https://dataservice.accuweather.com/forecasts/v1/daily/5day/"
+darkSkyURL= "https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/3376c98c20aa4edf120a638b7c49a715/39.739,-104.985";
+//openWeatherURL= "https://api.openweathermap.org/data/2.5/forecast?lat=39.739&lon=-104.985&appid=08d77f5d1b0e1290aa91c405aa22063e";
 weatherBitURL= "https://api.weatherbit.io/v2.0/forecast/daily?units=i&days=5&lat=39.739&lon=-104.98&key=fc0210422d3243c8a160888937c8034e"
 
 function formatURL(city,state,country){
@@ -76,6 +83,12 @@ function get(url){
     .catch(error => console.log("no worky"));
 }
 
+function testGet(url1,url2){
+    Promise.all([fetch(url1),fetch(url2)])
+    .then(response => Promise.all(response.map(value => value.json())))
+    .then(values => console.log(values));
+}
+
 function onSubmit(){
     $(".input").on('click', '.submit', event => {
         event.preventDefault();
@@ -84,7 +97,7 @@ function onSubmit(){
 }
 
 function test(){
-    get(formatURL("denver","CO","US"));
+    testGet(weatherBitURL,darkSkyURL);
 }
 
-$(onSubmit);
+$(test());
