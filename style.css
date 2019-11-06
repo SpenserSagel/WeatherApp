@@ -3,3 +3,65 @@
       -make pretty
       -make responsive
 */
+body *{
+  font-family: 'Nunito', sans-serif;
+  display:flex;
+  flex-direction: column;
+  margin:auto;
+  align-content: center;
+}
+
+body{
+  background-color:rgb(58, 72, 82);
+  color:white;
+}
+
+h1{
+  margin-bottom:10px;
+}
+
+p{
+  text-align: center;
+  margin-bottom:10px;
+}
+
+.input{
+  margin-top: 30px;
+  flex-direction: row;
+}
+
+.input *{
+  margin-right:5px;
+  height:20px;
+  width:30%;
+}
+
+.input .submit{
+  font-size: 100%;
+  font-family: inherit;
+  border: 0;
+  padding: 0;
+  height: 25px;
+  width: 65px;
+  padding-left: 4px;
+}
+
+.weatherDisplay{
+  flex-direction: row;
+}
+
+.weatherDisplay ul{
+  list-style-type: none;
+  flex-direction: row;
+  padding-right:40px;
+}
+
+.weatherDisplay ul li{
+  padding:10px;
+  background: rgb(30, 41, 134);
+  flex-direction: column;
+  border: 2px solid black;
+  border-radius: 5px;
+  margin:10px;
+  margin-top: 25px;
+}
