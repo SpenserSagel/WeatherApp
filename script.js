@@ -143,36 +143,36 @@ function weatherToHTML(temps){
     <ul>
         <li>
             <span>${temps.date[0]}</span> 
-            <span>High: ${temps.max[0].toFixed(1)}</span> 
-            <span>Low: ${temps.min[0].toFixed(1)}</span>
+            <span>High: ${temps.max[0].toFixed(1)} &degF</span> 
+            <span>Low: ${temps.min[0].toFixed(1)} &degF</span>
             <span>${temps.precipType[0]}: ${temps.precipProb[0].toFixed(0)}%</span>
         </li>
 
         <li>
             <span>${temps.date[1]}</span> 
-            <span>High: ${temps.max[1].toFixed(1)}</span>
-            <span>Low: ${temps.min[1].toFixed(1)}</span> 
+            <span>High: ${temps.max[1].toFixed(1)} &degF</span>
+            <span>Low: ${temps.min[1].toFixed(1)} &degF</span> 
             <span>${temps.precipType[1]}: ${temps.precipProb[1].toFixed(0)}%</span>
         </li>
 
         <li>
             <span>${temps.date[2]}</span> 
-            <span>High: ${temps.max[2].toFixed(1)}</span>
-            <span>Low: ${temps.min[2].toFixed(1)}</span> 
+            <span>High: ${temps.max[2].toFixed(1)} &degF</span>
+            <span>Low: ${temps.min[2].toFixed(1)} &degF</span> 
             <span>${temps.precipType[2]}: ${temps.precipProb[2].toFixed(0)}%</span>
         </li>
 
         <li>
             <span>${temps.date[3]}</span>
-            <span>High: ${temps.max[3].toFixed(1)}</span>
-            <span>Low: ${temps.min[3].toFixed(1)}</span> 
+            <span>High: ${temps.max[3].toFixed(1)} &degF</span>
+            <span>Low: ${temps.min[3].toFixed(1)} &degF</span> 
             <span>${temps.precipType[3]}: ${temps.precipProb[3].toFixed(0)}%</span>
         </li>
 
         <li>
             <span>${temps.date[4]}</span> 
-            <span>High: ${temps.max[4].toFixed(1)}</span> 
-            <span>Low: ${temps.min[4].toFixed(1)}</span> 
+            <span>High: ${temps.max[4].toFixed(1)} &degF</span> 
+            <span>Low: ${temps.min[4].toFixed(1)} &degF</span> 
             <span>${temps.precipType[4]}: ${temps.precipProb[4].toFixed(0)}%</span>
         </li>
     </ul>`
