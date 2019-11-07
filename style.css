@@ -1,6 +1,5 @@
 /*
     TODO:
-      -make pretty
       -make responsive
 */
 body *{
@@ -18,6 +17,7 @@ body{
 
 h1{
   margin-bottom:10px;
+  text-align: center;
 }
 
 p{
@@ -53,6 +53,8 @@ p{
 .weatherDisplay ul{
   list-style-type: none;
   flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
   padding-right:40px;
 }
 
@@ -64,4 +66,24 @@ p{
   border-radius: 5px;
   margin:10px;
   margin-top: 25px;
+}
+
+@media screen and (max-width:602px){
+  p{
+    max-width: 365px;
+  }
+}
+
+@media screen and (max-width:555px){
+  .input{
+    flex-direction: column;
+  }
+
+  .input *{
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  .input .submit{
+    margin: auto;
+  }
 }
