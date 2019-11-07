@@ -1,28 +1,17 @@
-/* 
-    TODO:
-      -take in user input and format URL
-      -write multiple fetch calls to different weather api
-      -combine data into one set
-      -display data onto page
 
-      --format other URLS
-      --find a 4th API
-      --get temps from other URLS
-      --combine temps
-      --display temps
-
-*/
 accuWeatherKey= "?apikey=MAe2sJnI8J4aPC2lrdXJ0srAizjCp6jW&details=true";
 locationURL= "https://dataservice.accuweather.com/locations/v1/cities/";
 accuWeatherURL= "https://dataservice.accuweather.com/forecasts/v1/daily/5day/"
 darkSkyURL= "https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/3376c98c20aa4edf120a638b7c49a715/";
-//openWeatherURL= "https://api.openweathermap.org/data/2.5/forecast?lat=39.739&lon=-104.985&appid=08d77f5d1b0e1290aa91c405aa22063e";
 weatherBitURL= "https://api.weatherbit.io/v2.0/forecast/daily?units=i&days=5&key=fc0210422d3243c8a160888937c8034e"
 
+//Calls accuweather location api to return a dataset to be used
+//for formatting other API's i.e. with coordinates of the location
 function formatAccuURL(city,state,country){
     return locationURL+country+'/'+state+'/search'+accuWeatherKey+'&q='+city;
 }
 
+//formats API URL's to be used for extracting weather information
 function formatAllURLs(data){
     latitude = data[0].GeoPosition.Latitude;
     longitude = data[0].GeoPosition.Longitude;
@@ -30,19 +19,11 @@ function formatAllURLs(data){
     formattedURLs = [darkSkyURL,weatherBitURL,accuWeatherURL];
     formattedURLs[0] += latitude+','+longitude;
     formattedURLs[1] += "&lat="+latitude+"&lon="+longitude;
+    //accuweather URL uses a proprietary location ID
     formattedURLs[2] += ID + accuWeatherKey;
     return Promise.all([fetch(formattedURLs[0]),fetch(formattedURLs[1]),fetch(formattedURLs[2])])
-    .then(response => Promise.all(response.map(value => value.json())));
+           .then(response => Promise.all(response.map(value => value.json())));
 }
-/*
-function formatWithID(data){
-    url = accuWeatherURL;
-    ID = data[0].Key;
-    console.log(ID);
-    url+=(ID + accuWeatherKey);
-    console.log(url);
-    return fetch(url);
-}*/
 
 function getDarkSkyTemps(i,temps,data){
     temps[0].date[i]=data[2].DailyForecasts[i].Date;
@@ -69,6 +50,7 @@ function getAccuWeatherTemps(i,temps,data){
     return temps;
 }
 
+//Turns Unix date into easy to read day of the week
 function formatDate(date){
     formattedDate = new Date(date);
     switch(formattedDate.getDay()){
@@ -96,40 +78,42 @@ function formatDate(date){
     }
 }
 
+//Takes set of temps and averages them together
+//in addition to providing the date and precipitation information
 function combineTemps(temps){
     var combinedTemps = {min:[0,0,0,0,0],max:[0,0,0,0,0],date:[],precipProb:[0,0,0,0,0],precipType:[]};
-    /*for(i=0;i<temps[i].min.length;i++){
-        console.log(isset(temps[0].precipType[i]));
-        if(isset(temps[0].precipType[i])){
-            combinedTemps.precipType[i]=temps[0].precipType[i];
-            console.log(combinedTemps.precipType[i]);
-        }
-        else {combinedTemps.precipType[i]='no rain';}
-    }*/
+
+    //adds up all the temps over 5 seperate days
     for(i=0;i<temps.length;i++){
         for(j=0;j<temps[i].min.length;j++){
+            //uses the date only from the first API
             combinedTemps.date[j]=formatDate(temps[i].date[j]);
             combinedTemps.min[j]+=temps[i].min[j];
             combinedTemps.max[j]+=temps[i].max[j];
             combinedTemps.precipProb[j]+=temps[i].precipProb[j];
+            //differentiates between rain and snow
             if(temps[0].precipType[j]===undefined){combinedTemps.precipType[j]='rain';}
             else{combinedTemps.precipType[j]=temps[0].precipType[j];}
         }
     }
+
+    //dividing to achieve average
     for(i=0;i<combinedTemps.min.length;i++){
         combinedTemps.min[i]=combinedTemps.min[i]/temps.length;
         combinedTemps.max[i]=combinedTemps.max[i]/temps.length;
         combinedTemps.precipProb[i]=combinedTemps.precipProb[i]/temps.length;
     }
-    console.log(combinedTemps);
+
     return combinedTemps;
 }
 
+//Takes data from separate API's, puts them into one array and averages them together
 function extractWeather(data){
-    console.log(data);
+    //temps is the primary object used throughout most of the program
     var temps = [{min:[],max:[],date:[],precipProb:[],precipType:[]},
     {min:[],max:[],date:[],precipProb:[]},
     {min:[],max:[],date:[],precipProb:[]}];
+
     for(i=0;i<5;i++){
         getDarkSkyTemps(i,temps,data);
         getWeatherBitTemps(i,temps,data);
@@ -178,10 +162,15 @@ function weatherToHTML(temps){
     </ul>`
 }
 
+//adds averaged temps in HTML format to index.html
+//extractWeather starts with get**temps functions and uses combineTemps to return average temps
+//The data is formatted and displayed on index.html
 function renderWeather(data){
     $(".weatherDisplay").html(weatherToHTML(extractWeather(data)));
 }
 
+//this function first fetches the location API
+//then formats the other URLS and returns renderWeather
 function get(url){
     fetch(url)
     .then(response => {
@@ -190,32 +179,18 @@ function get(url){
         }
         throw new error(response.statusText());
     })
-    .then(responseJson => formatAllURLs(responseJson))/*
-    .then(response => {
-        if(response.ok){
-            return response;
-        }
-        throw new error(response.statusText());
-    })*/
+    .then(responseJson => formatAllURLs(responseJson))
     .then(response => renderWeather(response))
-    .catch(error => console.log("no worky"));
+    .catch(error => $(".weatherDisplay").html(`<p>An error has occured.  Please try again.</p>`));
 }
 
-function testGet(url1,url2){
-    Promise.all([fetch(url1),fetch(url2)])
-    .then(response => Promise.all(response.map(value => value.json())))
-    .then(values => console.log(values));
-}
-
+//Initializing function takes info from the main form
+//and uses it to initialize the call to the location API
 function onSubmit(){
     $(".input").on('click', '.submit', event => {
         event.preventDefault();
         get(formatAccuURL($("#city").val(),$("#state").val(),$("#country").val()));
     });
-}
-
-function test(){
-    testGet(weatherBitURL,darkSkyURL);
 }
 
 $(onSubmit);
